@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/validators.dart';
+import '../../app.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,10 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     final authProvider = context.read<AuthProvider>();
-    await authProvider.login(
+    final success = await authProvider.login(
       _emailController.text.trim(),
       _passwordController.text,
     );
+    if (success && mounted) {
+      Navigator.pushReplacement(context, MaterialPageRoute(
+        builder: (_) => const MainScaffold(),
+      ));
+    }
   }
 
   @override

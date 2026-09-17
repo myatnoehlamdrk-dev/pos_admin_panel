@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import '../config/api_config.dart';
 import '../models/dashboard_stats.dart';
 import '../models/shop.dart';
+import '../models/shop_detail.dart';
 import '../models/user.dart';
+import '../models/user_detail.dart';
 
 class AdminRepository {
   final Dio _dio;
@@ -123,5 +125,83 @@ class AdminRepository {
 
   Future<void> deleteUser(String id) async {
     await _dio.delete(ApiConfig.adminUserDelete(id));
+  }
+
+  // User Detail
+
+  Future<UserDetail> getUserDetail(String id) async {
+    final response = await _dio.get(ApiConfig.adminUserDetail(id));
+    final parsed = _parseResponse(response);
+    return UserDetail.fromJson(parsed['data'] ?? parsed);
+  }
+
+  Future<UserAnalytics> getUserAnalytics(String id) async {
+    final response = await _dio.get(ApiConfig.adminUserAnalytics(id));
+    final parsed = _parseResponse(response);
+    return UserAnalytics.fromJson(parsed['data'] ?? parsed);
+  }
+
+  Future<PaginatedResponse<Map<String, dynamic>>> getUserTransactions(
+    String id, {
+    int page = 1,
+    int perPage = 20,
+  }) async {
+    final response = await _dio.get(
+      ApiConfig.adminUserTransactions(id),
+      queryParameters: {'page': page, 'per_page': perPage},
+    );
+    final parsed = _parseResponse(response);
+    final data = parsed['data'] ?? parsed;
+
+    return PaginatedResponse(
+      items: (data['transactions'] as List).cast<Map<String, dynamic>>(),
+      total: _toInt(data['pagination']['total']),
+      currentPage: _toInt(data['pagination']['current_page']),
+      lastPage: _toInt(data['pagination']['last_page']),
+    );
+  }
+
+  // Shop Detail
+
+  Future<ShopDetail> getShopDetail(String id) async {
+    final response = await _dio.get(ApiConfig.adminShopDetail(id));
+    final parsed = _parseResponse(response);
+    return ShopDetail.fromJson(parsed['data'] ?? parsed);
+  }
+
+  Future<ShopAnalytics> getShopAnalytics(String id) async {
+    final response = await _dio.get(ApiConfig.adminShopAnalytics(id));
+    final parsed = _parseResponse(response);
+    return ShopAnalytics.fromJson(parsed['data'] ?? parsed);
+  }
+
+  Future<PaginatedResponse<Map<String, dynamic>>> getShopTransactions(
+    String id, {
+    int page = 1,
+    int perPage = 20,
+  }) async {
+    final response = await _dio.get(
+      ApiConfig.adminShopTransactions(id),
+      queryParameters: {'page': page, 'per_page': perPage},
+    );
+    final parsed = _parseResponse(response);
+    final data = parsed['data'] ?? parsed;
+
+    return PaginatedResponse(
+      items: (data['transactions'] as List).cast<Map<String, dynamic>>(),
+      total: _toInt(data['pagination']['total']),
+      currentPage: _toInt(data['pagination']['current_page']),
+      lastPage: _toInt(data['pagination']['last_page']),
+    );
+  }
+
+  Future<List<SalesChartData>> getShopSalesChart(String id, {int days = 7}) async {
+    final response = await _dio.get(
+      ApiConfig.adminShopSalesChart(id),
+      queryParameters: {'days': days},
+    );
+    final parsed = _parseResponse(response);
+    final list = parsed['data'] ?? parsed;
+    return (list as List).map((e) => SalesChartData.fromJson(e)).toList();
   }
 }

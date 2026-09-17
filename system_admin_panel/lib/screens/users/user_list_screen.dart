@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../models/user.dart';
 import '../../providers/user_provider.dart';
-
 import '../../widgets/confirm_dialog.dart';
+import 'user_detail_screen.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -248,7 +248,12 @@ class _UserListScreenState extends State<UserListScreen> {
 
   Widget _buildUserRow(BuildContext context, User user, UserProvider provider, int index) {
     return InkWell(
-      onTap: () => _showUserDetail(context, user),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => UserDetailScreen(user: user)),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -347,113 +352,6 @@ class _UserListScreenState extends State<UserListScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showUserDetail(BuildContext context, User user) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                      child: Text(
-                        user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : '?',
-                        style: const TextStyle(color: Color(0xFF3B82F6), fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user.fullName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 2),
-                          Text(user.email, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: user.activeStatus ? const Color(0xFF10B981).withValues(alpha: 0.1) : Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        user.activeStatus ? 'Active' : 'Inactive',
-                        style: TextStyle(
-                          color: user.activeStatus ? const Color(0xFF10B981) : Colors.red,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const Divider(),
-                const SizedBox(height: 8),
-                _detailRow(Icons.person_outline, 'Role', user.role ?? 'N/A'),
-                _detailRow(Icons.store_outlined, 'Shop', user.shop?.shopName ?? 'Unassigned'),
-                _detailRow(Icons.phone_outlined, 'Phone', user.phone ?? 'Not provided'),
-                _detailRow(Icons.location_on_outlined, 'Address', user.address ?? 'Not provided'),
-                _detailRow(Icons.credit_card_outlined, 'NRC No', user.nrcNo ?? 'Not provided'),
-                _detailRow(Icons.wc_outlined, 'Gender', user.gender ?? 'Not provided'),
-                _detailRow(Icons.cake_outlined, 'Date of Birth', user.dateOfBirth ?? 'Not provided'),
-                _detailRow(Icons.payment_outlined, 'Billing Way', user.billingWay ?? 'Not provided'),
-                _detailRow(Icons.verified_outlined, 'Verified', user.isVerified ? 'Yes' : 'No'),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _detailRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.grey[500]),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 100,
-            child: Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
-          ),
-          Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          ),
-        ],
       ),
     );
   }

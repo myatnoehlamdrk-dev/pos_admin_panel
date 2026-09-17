@@ -92,22 +92,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     subtitle: '${stats.pendingApprovals} pending',
                     width: width,
                   ),
-                  _buildStatCard(
-                    title: 'Total Sales',
-                    value: Formatters.number(stats.totalSales),
-                    icon: Icons.receipt_long_outlined,
-                    color: const Color(0xFFF59E0B),
-                    subtitle: '${stats.todaySalesCount} today',
-                    width: width,
-                  ),
-                  _buildStatCard(
-                    title: 'Total Revenue',
-                    value: Formatters.currency(stats.totalRevenue),
-                    icon: Icons.attach_money,
-                    color: const Color(0xFF8B5CF6),
-                    subtitle: '${Formatters.currency(stats.todayRevenue)} today',
-                    width: width,
-                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -222,36 +206,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
               padding: EdgeInsets.all(16),
               child: Center(child: Text('No product data')),
             )
-          else
-            ...products.take(5).map((p) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              p.productName,
-                              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              '${Formatters.number(p.totalQuantity)} sold',
-                              style: TextStyle(color: Colors.grey[500], fontSize: 11),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        Formatters.currency(p.totalRevenue),
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-                      ),
-                    ],
+          else ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Expanded(flex: 3, child: Text('Product', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 2, child: Text('Shop', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 1, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 1, child: Text('Sold', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 1, child: Text('Stock', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 2, child: Text('Total', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                ],
+              ),
+            ),
+            ...products.take(10).map((p) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      p.productName,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                )),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      p.shopName,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      Formatters.currency(p.unitPrice),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${p.totalQuantity}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      '${p.stock}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      Formatters.currency(p.totalRevenue),
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            )),
+          ],
         ],
       ),
     );

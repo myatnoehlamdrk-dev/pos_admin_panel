@@ -78,14 +78,20 @@ class SalesChartData {
 class TopProduct {
   final String productName;
   final String? productImage;
+  final String shopName;
+  final int unitPrice;
   final int totalQuantity;
   final int totalRevenue;
+  final int stock;
 
   TopProduct({
     required this.productName,
     this.productImage,
+    required this.shopName,
+    required this.unitPrice,
     required this.totalQuantity,
     required this.totalRevenue,
+    required this.stock,
   });
 
   static int _toInt(dynamic v) {
@@ -100,8 +106,11 @@ class TopProduct {
     return TopProduct(
       productName: json['product_name']?.toString() ?? '',
       productImage: json['product_image']?.toString(),
+      shopName: json['shop_name']?.toString() ?? '',
+      unitPrice: _toInt(json['unit_price']),
       totalQuantity: _toInt(json['total_quantity']),
       totalRevenue: _toInt(json['total_revenue']),
+      stock: _toInt(json['stock']),
     );
   }
 }

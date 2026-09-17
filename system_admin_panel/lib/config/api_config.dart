@@ -21,5 +21,14 @@ class ApiConfig {
   static String adminUserToggle(String id) => '/api/admin/users/$id/toggle-active';
   static String adminUserDelete(String id) => '/api/admin/users/$id';
 
+  static String adminUserDetail(String id) => '/api/admin/users/$id';
+  static String adminUserAnalytics(String id) => '/api/admin/users/$id/analytics';
+  static String adminUserTransactions(String id) => '/api/admin/users/$id/transactions';
+
+  static String adminShopDetail(String id) => '/api/admin/shops/$id';
+  static String adminShopAnalytics(String id) => '/api/admin/shops/$id/analytics';
+  static String adminShopTransactions(String id) => '/api/admin/shops/$id/transactions';
+  static String adminShopSalesChart(String id) => '/api/admin/shops/$id/sales-chart';
+
   static const String images = '/api/images';
 }

@@ -6,7 +6,9 @@ import 'app.dart';
 import 'config/api_config.dart';
 import 'providers/auth_provider.dart';
 import 'providers/dashboard_provider.dart';
+import 'providers/shop_detail_provider.dart';
 import 'providers/shop_provider.dart';
+import 'providers/user_detail_provider.dart';
 import 'providers/user_provider.dart';
 import 'repositories/admin_repository.dart';
 import 'repositories/auth_repository.dart';
@@ -45,10 +47,6 @@ void main() async {
   final authRepo = AuthRepository(dio, prefs);
   final adminRepo = AdminRepository(dio);
 
-  if (authRepo.isLoggedIn) {
-    authRepo.setAuthHeader();
-  }
-
   runApp(
     MultiProvider(
       providers: [
@@ -56,6 +54,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DashboardProvider(adminRepo)),
         ChangeNotifierProvider(create: (_) => ShopProvider(adminRepo)),
         ChangeNotifierProvider(create: (_) => UserProvider(adminRepo)),
+        ChangeNotifierProvider(create: (_) => UserDetailProvider(adminRepo)),
+        ChangeNotifierProvider(create: (_) => ShopDetailProvider(adminRepo)),
         Provider.value(value: adminRepo),
       ],
       child: const AdminApp(),

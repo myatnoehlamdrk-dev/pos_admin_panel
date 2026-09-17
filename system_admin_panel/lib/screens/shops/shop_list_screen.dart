@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/shop_provider.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/confirm_dialog.dart';
+import 'shop_detail_screen.dart';
 
 class ShopListScreen extends StatefulWidget {
   const ShopListScreen({super.key});
@@ -221,7 +222,12 @@ class _ShopListScreenState extends State<ShopListScreen> {
 
   Widget _buildShopRow(BuildContext context, dynamic shop, ShopProvider provider) {
     return InkWell(
-      onTap: () => _showShopDetail(context, shop),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ShopDetailScreen(shop: shop)),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -317,121 +323,6 @@ class _ShopListScreenState extends State<ShopListScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showShopDetail(BuildContext context, dynamic shop) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.65,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        expand: false,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3B82F6).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: shop.shopImage != null && shop.shopImage!.isNotEmpty
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                shop.shopImage!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (ctx, error, stack) => const Icon(Icons.store, color: Color(0xFF3B82F6), size: 28),
-                              ),
-                            )
-                          : const Icon(Icons.store, color: Color(0xFF3B82F6), size: 28),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(shop.shopName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 2),
-                          Text(shop.shopType ?? 'Unknown type', style: TextStyle(color: Colors.grey[600], fontSize: 13)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: shop.isActive ? const Color(0xFF10B981).withValues(alpha: 0.1) : Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        shop.isActive ? 'Active' : 'Inactive',
-                        style: TextStyle(
-                          color: shop.isActive ? const Color(0xFF10B981) : Colors.red,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const Divider(),
-                const SizedBox(height: 8),
-                _detailRow(Icons.person_outline, 'Owner', shop.ownerName ?? 'Not provided'),
-                _detailRow(Icons.email_outlined, 'Owner Email', shop.ownerEmail ?? 'Not provided'),
-                _detailRow(Icons.phone_outlined, 'Owner Phone', shop.ownerPhone ?? 'Not provided'),
-                _detailRow(Icons.location_on_outlined, 'Address', shop.shopPhysicalAddress ?? 'Not provided'),
-                _detailRow(Icons.people_outlined, 'Users', '${shop.usersCount}'),
-                _detailRow(Icons.attach_money, 'Revenue', Formatters.currency(shop.totalRevenue ?? 0)),
-                _detailRow(Icons.calendar_today_outlined, 'Created', shop.createdAt ?? '-'),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _detailRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.grey[500]),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 100,
-            child: Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
-          ),
-          Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-          ),
-        ],
       ),
     );
   }

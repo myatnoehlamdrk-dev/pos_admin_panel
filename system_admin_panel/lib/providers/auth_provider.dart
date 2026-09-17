@@ -14,37 +14,7 @@ class AuthProvider extends ChangeNotifier {
 
   User? get user => _user;
   bool get isLoading => _isLoading;
-  bool get isLoggedIn => _authRepository.isLoggedIn;
   String? get error => _error;
-
-  Future<bool> autoLogin() async {
-    if (!_authRepository.isLoggedIn) return false;
-
-    try {
-      _isLoading = true;
-      notifyListeners();
-
-      _user = await _authRepository.getMe();
-
-      if (_user?.role != 'admin') {
-        await logout();
-        return false;
-      }
-
-      if (_user?.activeStatus == false) {
-        _error = 'Your account is inactive. Please contact administrator.';
-        await logout();
-        return false;
-      }
-
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      await logout();
-      return false;
-    }
-  }
 
   Future<bool> login(String email, String password) async {
     try {

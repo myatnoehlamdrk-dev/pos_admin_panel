@@ -39,36 +39,11 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthProvider>().autoLogin().then((loggedIn) {
-        if (loggedIn && mounted) {
-          Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (_) => const MainScaffold(),
-          ));
-        }
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, auth, _) {
-        if (auth.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
         if (auth.user != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (_) => const MainScaffold(),
-              ));
-            }
-          });
+          return const MainScaffold();
         }
         return const LoginScreen();
       },

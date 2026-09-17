@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/api_config.dart';
-import '../models/user.dart';
 
 class AuthRepository {
   final Dio _dio;
@@ -10,8 +9,6 @@ class AuthRepository {
   AuthRepository(this._dio, this._prefs);
 
   String? get token => _prefs.getString('auth_token');
-
-  bool get isLoggedIn => token != null;
 
   Future<void> saveToken(String token) async {
     await _prefs.setString('auth_token', token);
@@ -41,12 +38,6 @@ class AuthRepository {
     }
 
     return data;
-  }
-
-  Future<User> getMe() async {
-    setAuthHeader();
-    final response = await _dio.get(ApiConfig.me);
-    return User.fromJson(response.data['data'] ?? response.data);
   }
 
   Future<void> logout() async {
