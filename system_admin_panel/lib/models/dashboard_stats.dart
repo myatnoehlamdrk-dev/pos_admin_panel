@@ -3,6 +3,7 @@ class DashboardStats {
   final int activeShops;
   final int totalUsers;
   final int pendingApprovals;
+  final int totalProducts;
   final int totalSales;
   final int totalRevenue;
   final int todaySalesCount;
@@ -15,6 +16,7 @@ class DashboardStats {
     required this.activeShops,
     required this.totalUsers,
     required this.pendingApprovals,
+    required this.totalProducts,
     required this.totalSales,
     required this.totalRevenue,
     required this.todaySalesCount,
@@ -37,6 +39,7 @@ class DashboardStats {
       activeShops: _toInt(json['active_shops']),
       totalUsers: _toInt(json['total_users']),
       pendingApprovals: _toInt(json['pending_approvals']),
+      totalProducts: _toInt(json['total_products']),
       totalSales: _toInt(json['total_sales']),
       totalRevenue: _toInt(json['total_revenue']),
       todaySalesCount: _toInt(json['today_sales_count']),

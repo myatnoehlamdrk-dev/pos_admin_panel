@@ -2,7 +2,13 @@ import 'package:intl/intl.dart';
 
 class Formatters {
   static String currency(int amount) {
-    final formatter = NumberFormat.currency(symbol: 'MMK ', decimalDigits: 0);
+    if (amount < 0) return '-${currency(-amount)}';
+    final digits = amount.toString().length;
+    if (digits > 5) {
+      final truncated = amount.toString().substring(0, 5);
+      return '$truncated...';
+    }
+    final formatter = NumberFormat.decimalPattern();
     return formatter.format(amount);
   }
 

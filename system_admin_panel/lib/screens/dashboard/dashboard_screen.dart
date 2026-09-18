@@ -92,6 +92,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     subtitle: '${stats.pendingApprovals} pending',
                     width: width,
                   ),
+                  _buildStatCard(
+                    title: 'Total Products',
+                    value: Formatters.number(stats.totalProducts),
+                    icon: Icons.inventory_2_outlined,
+                    color: const Color(0xFFF59E0B),
+                    width: width,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -173,6 +180,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  void _showAmountDialog(BuildContext context, String title, int amount) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(
+          Formatters.number(amount),
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1E293B),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTopProducts(DashboardProvider provider) {
     final products = provider.topProducts;
     return Container(
@@ -220,9 +250,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Expanded(flex: 3, child: Text('Product', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
                   Expanded(flex: 2, child: Text('Shop', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
-                  Expanded(flex: 1, child: Text('Unit Price', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
+                  Expanded(flex: 1, child: Text('Price', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
                   Expanded(flex: 1, child: Text('Sold', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
-                  Expanded(flex: 1, child: Text('Stock', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
                   Expanded(flex: 2, child: Text('Total', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12))),
                 ],
               ),
@@ -250,11 +279,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Expanded(
+                   Expanded(
                     flex: 1,
-                    child: Text(
-                      Formatters.currency(p.unitPrice),
-                      style: const TextStyle(fontSize: 12),
+                    child: GestureDetector(
+                      onTap: () => _showAmountDialog(context, 'Unit Price', p.unitPrice),
+                      child: Text(
+                        Formatters.currency(p.unitPrice),
+                        style: const TextStyle(fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -265,17 +298,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 1,
-                    child: Text(
-                      '${p.stock}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  Expanded(
                     flex: 2,
-                    child: Text(
-                      Formatters.currency(p.totalRevenue),
-                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                    child: GestureDetector(
+                      onTap: () => _showAmountDialog(context, 'Total', p.totalRevenue),
+                      child: Text(
+                        Formatters.currency(p.totalRevenue),
+                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ],
